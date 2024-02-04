@@ -35,7 +35,6 @@ describe("Escrow", () => {
         lender.address
       ); //passing the various account addresses which were destructured above into the Escrow contract's contructor
 
-     
       //Approve property
       transaction = await realEstate.connect(seller).approve(escrow.address, 1);
       await transaction.wait();
@@ -91,6 +90,17 @@ describe("Escrow", () => {
 
       it("Returns escrow amount", async () => {
         const result = await escrow.escrowAmount(1);
+        expect(result).to.be.equal(tokens(5));
+      });
+    });
+
+    describe("Deposits", async () => {
+      it("Updates Contract Balance", async () => {
+        const transaction = await escrow
+          .connect(buyer)
+          .depositEarnest(1, { value: tokens(5) });
+        await transaction.wait();
+        const result = await escrow.getBalance();
         expect(result).to.be.equal(tokens(5));
       });
     });
